@@ -18,15 +18,16 @@ bool Proverka(string A)
 		return 1;
 }
 
-
 class Game
 {
 	char** mas;
 	int str;
 	int sto;
+	int xod;
 public:
 	Game()
 	{
+		xod = 0;
 		str = 3;
 		sto = 3;
 		mas = new char*[str];
@@ -38,6 +39,7 @@ public:
 	}
 	Game(const int&s,const int&o)
 	{
+		xod = 0;
 		str = s;
 		sto = o;
 		mas = new char* [str];
@@ -177,6 +179,7 @@ public:
 				mas[i][u] = ' ';
 			}
 		}
+		xod = 0;
 	}
 	bool VvodX()
 	{
@@ -208,6 +211,7 @@ re1:	cout << "Enter coordinates for 'X'.\n";
 			goto re1;
 		}
 		mas[st][o] = 'X';
+		xod++;
 		system("cls");
 		PrintMas();
 		if (ProverkaSTO() == 1 || ProverkaSTR() == 1 || ProverkaDIA() == 1 || ProverkaDIA2() == 1)
@@ -219,6 +223,11 @@ re1:	cout << "Enter coordinates for 'X'.\n";
 		{
 			cout << "\t\t~~~~~~~ 'O' won! ~~~~~~~\n\n";
 			return 1;
+		}
+		if (xod >= str * sto)
+		{
+			cout << "\tNobody won.\n";
+			return 0;
 		}
 		return 0;
 	}
@@ -252,6 +261,7 @@ re2:	cout << "Enter coordinates for 'O'.\n";
 			goto re2;
 		}
 		mas[st][o] = 'O';
+		xod++;
 		system("cls");
 		PrintMas();
 		if (ProverkaSTO() == 1 || ProverkaSTR() == 1 || ProverkaDIA() == 1 || ProverkaDIA2() == 1)
@@ -263,22 +273,34 @@ re2:	cout << "Enter coordinates for 'O'.\n";
 		{
 			cout << "\t\t~~~~~~~ 'O' won! ~~~~~~~\n\n";
 			return 1;
+		}
+		if (xod >= str * sto)
+		{
+			cout << "\tNobody won.\n";
+			return 0;
 		}
 		return 0;
 	}
 	bool BotO()
 	{
 		bool f = true;
+		int s = rand() % str, g = rand() % sto;
 		while (f)
-		{
-			int s = rand() % sto;
-			int g = rand() % sto;
-			if (mas[s][g] != 'X' || mas[s][g] != 'O')
+		{			
+			if (mas[s][g] == 'X' || mas[s][g] == 'O')
+			{
+				s = rand() % str;
+				g = rand() % sto;			
+			}
+			else
 			{
 				mas[s][g] = 'O';
+				xod++;
 				f = false;
 			}
-		}				
+		}
+		cout << "Bot is thinking...\n";
+		this_thread::sleep_for(chrono::milliseconds(rand()%1000+500));
 		system("cls");
 		PrintMas();
 		if (ProverkaSTO() == 1 || ProverkaSTR() == 1 || ProverkaDIA() == 1 || ProverkaDIA2() == 1)
@@ -290,6 +312,11 @@ re2:	cout << "Enter coordinates for 'O'.\n";
 		{
 			cout << "\t\t~~~~~~~ 'O' won! ~~~~~~~\n\n";
 			return 1;
+		}
+		if (xod >= str * sto)
+		{
+			cout << "\tNobody won.\n";
+			return 0;
 		}
 		return 0;
 	}
@@ -305,12 +332,12 @@ re2:	cout << "Enter coordinates for 'O'.\n";
 			{
 			case'1':
 			{
-				while (true)
+				while (xod < str * sto)
 				{
-					if (VvodX())
+					if (VvodX()|| xod >= str * sto)
 						break;
 
-					if (BotO())
+					if (BotO()|| xod >= str * sto)
 						break;
 				}
 				system("pause");
@@ -319,12 +346,12 @@ re2:	cout << "Enter coordinates for 'O'.\n";
 			}
 			case'2':
 			{
-				while (true)
+				while (xod < str * sto)
 				{					
-					if (VvodX())
+					if (VvodX()|| xod >= str * sto)
 						break;
 					
-					if (VvodO())
+					if (VvodO()|| xod >= str * sto)
 						break;
 				}
 				system("pause");
