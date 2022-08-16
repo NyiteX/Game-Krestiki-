@@ -59,6 +59,8 @@ public:
 					kolX++;
 				if (mas[i][u] == 'O')
 					kolO++;
+				//else
+				//break;
 			}
 			if (kolX == sto)
 				return 1;
@@ -72,18 +74,20 @@ public:
 	int ProverkaSTR()
 	{
 		int kolX = 0, kolO = 0;
-		for (int i = 0; i < sto; i++)
+		for (int i = 0; i < str; i++)
 		{
-			for (int u = 0; u < str; u++)
+			for (int u = 0; u < sto; u++)
 			{
-				if (mas[i][u] == 'X')
+				if (mas[u][i] == 'X')
 					kolX++;
-				if (mas[i][u] == 'O')
+				if (mas[u][i] == 'O')
 					kolO++;
+				/*if (mas[u][i] != 'O' && mas[u][i] != 'X')
+					break;*/
 			}
-			if (kolX == sto)
+			if (kolX == str)
 				return 1;
-			if (kolO == sto)
+			if (kolO == str)
 				return 2;
 			kolO = 0;
 			kolX = 0;
@@ -157,11 +161,11 @@ re1:	cout << "Enter coordinates for 'X'.\n";
 		}
 		mas[st][o] = 'X';
 		system("cls");		
-		if (ProverkaSTO() == 1)
+		if (ProverkaSTO() == 1 || ProverkaSTR() == 1)
 		{
 			cout << "\t\t~~~~~~~ 'X' won! ~~~~~~~\n\n";
 		}
-		if (ProverkaSTO() == 2)
+		if (ProverkaSTO() == 2 || ProverkaSTR() == 2)
 		{
 			cout << "\t\t~~~~~~~ 'O' won! ~~~~~~~\n\n";
 		}
@@ -198,11 +202,11 @@ re2:	cout << "Enter coordinates for 'O'.\n";
 		mas[st][o] = 'O';
 		system("cls");
 		PrintMas();
-		if (ProverkaSTO() == 1)
+		if (ProverkaSTO() == 1 || ProverkaSTR() == 1)
 		{
 			cout << "\t\t~~~~~~~ 'X' won! ~~~~~~~\n\n";
 		}
-		if (ProverkaSTO() == 2)
+		if (ProverkaSTO() == 2 || ProverkaSTR() == 2)
 		{
 			cout << "\t\t~~~~~~~ 'O' won! ~~~~~~~\n\n";
 		}
@@ -229,10 +233,10 @@ re2:	cout << "Enter coordinates for 'O'.\n";
 			}
 			case'2':
 			{
-				while (ProverkaSTO() == 0)
+				while (ProverkaSTO() == 0 || ProverkaSTR() == 0)
 				{
 					VvodX();
-					if (ProverkaSTO() != 0)
+					if (ProverkaSTO() != 0 || ProverkaSTR() != 0)
 						break;
 					VvodO();
 				}
