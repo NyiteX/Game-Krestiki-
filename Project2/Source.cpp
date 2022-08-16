@@ -57,10 +57,10 @@ public:
 			{
 				if (mas[i][u] == 'X')
 					kolX++;
-				if (mas[i][u] == 'O')
+				else if (mas[i][u] == 'O')
 					kolO++;
-				//else
-				//break;
+				else
+				break;
 			}
 			if (kolX == sto)
 				return 1;
@@ -80,10 +80,10 @@ public:
 			{
 				if (mas[u][i] == 'X')
 					kolX++;
-				if (mas[u][i] == 'O')
+				else if (mas[u][i] == 'O')
 					kolO++;
-				/*if (mas[u][i] != 'O' && mas[u][i] != 'X')
-					break;*/
+				else
+					break;
 			}
 			if (kolX == str)
 				return 1;
@@ -91,6 +91,54 @@ public:
 				return 2;
 			kolO = 0;
 			kolX = 0;
+		}
+		return 0;
+	}
+	int ProverkaDIA()
+	{
+		int kolX = 0, kolO = 0;
+		for (int i = 0; i < str; i++)
+		{
+			for (int u = 0; u < sto; u++)
+			{
+				if (u == i)
+				{
+					if (mas[i][u] == 'X')
+						kolX++;
+					else if (mas[i][u] == 'O')
+						kolO++;
+					else
+						break;
+				}
+			}
+			if (kolX == str)
+				return 1;
+			if (kolO == str)
+				return 2;
+		}
+		return 0;
+	}
+	int ProverkaDIA2()
+	{
+		int kolX = 0, kolO = 0;
+		for (int i = 0; i < str; i++)
+		{
+			for (int u = 0; u < sto; u++)
+			{
+				if (u+i==sto-1)
+				{
+					if (mas[i][u] == 'X')
+						kolX++;
+					else if (mas[i][u] == 'O')
+						kolO++;
+					else
+						break;
+				}
+			}
+			if (kolX == str)
+				return 1;
+			if (kolO == str)
+				return 2;
 		}
 		return 0;
 	}
@@ -130,7 +178,7 @@ public:
 			}
 		}
 	}
-	void VvodX()
+	bool VvodX()
 	{
 		int st, o;
 		system("cls");
@@ -160,17 +208,21 @@ re1:	cout << "Enter coordinates for 'X'.\n";
 			goto re1;
 		}
 		mas[st][o] = 'X';
-		system("cls");		
-		if (ProverkaSTO() == 1 || ProverkaSTR() == 1)
+		system("cls");
+		PrintMas();
+		if (ProverkaSTO() == 1 || ProverkaSTR() == 1 || ProverkaDIA() == 1 || ProverkaDIA2() == 1)
 		{
 			cout << "\t\t~~~~~~~ 'X' won! ~~~~~~~\n\n";
+			return 1;
 		}
-		if (ProverkaSTO() == 2 || ProverkaSTR() == 2)
+		if (ProverkaSTO() == 2 || ProverkaSTR() == 2 || ProverkaDIA() == 2 || ProverkaDIA2() == 2)
 		{
 			cout << "\t\t~~~~~~~ 'O' won! ~~~~~~~\n\n";
+			return 1;
 		}
+		return 0;
 	}
-	void VvodO()
+	bool VvodO()
 	{
 		int st, o;
 		system("cls");
@@ -202,14 +254,44 @@ re2:	cout << "Enter coordinates for 'O'.\n";
 		mas[st][o] = 'O';
 		system("cls");
 		PrintMas();
-		if (ProverkaSTO() == 1 || ProverkaSTR() == 1)
+		if (ProverkaSTO() == 1 || ProverkaSTR() == 1 || ProverkaDIA() == 1 || ProverkaDIA2() == 1)
 		{
 			cout << "\t\t~~~~~~~ 'X' won! ~~~~~~~\n\n";
+			return 1;
 		}
-		if (ProverkaSTO() == 2 || ProverkaSTR() == 2)
+		if (ProverkaSTO() == 2 || ProverkaSTR() == 2 || ProverkaDIA() == 2 || ProverkaDIA2() == 2)
 		{
 			cout << "\t\t~~~~~~~ 'O' won! ~~~~~~~\n\n";
+			return 1;
 		}
+		return 0;
+	}
+	bool BotO()
+	{
+		bool f = true;
+		while (f)
+		{
+			int s = rand() % sto;
+			int g = rand() % sto;
+			if (mas[s][g] != 'X' || mas[s][g] != 'O')
+			{
+				mas[s][g] = 'O';
+				f = false;
+			}
+		}				
+		system("cls");
+		PrintMas();
+		if (ProverkaSTO() == 1 || ProverkaSTR() == 1 || ProverkaDIA() == 1 || ProverkaDIA2() == 1)
+		{
+			cout << "\t\t~~~~~~~ 'X' won! ~~~~~~~\n\n";
+			return 1;
+		}
+		if (ProverkaSTO() == 2 || ProverkaSTR() == 2 || ProverkaDIA() == 2 || ProverkaDIA2() == 2)
+		{
+			cout << "\t\t~~~~~~~ 'O' won! ~~~~~~~\n\n";
+			return 1;
+		}
+		return 0;
 	}
 	void Menu()
 	{
@@ -217,7 +299,7 @@ re2:	cout << "Enter coordinates for 'O'.\n";
 		do
 		{
 			system("cls");
-			cout << "1. Game VS bot.\n2. Solo game.\n";
+			cout << "\t1. Game VS Bot.\n\t2. Solo game.\n";
 			vvod = _getch();
 			switch (vvod)
 			{
@@ -225,29 +307,28 @@ re2:	cout << "Enter coordinates for 'O'.\n";
 			{
 				while (true)
 				{
-					VvodX();
-					VvodO();
+					if (VvodX())
+						break;
+
+					if (BotO())
+						break;
 				}
 				system("pause");
+				RandMas();
 				break;
 			}
 			case'2':
 			{
-				while (ProverkaSTO() == 0 || ProverkaSTR() == 0)
-				{
-					VvodX();
-					if (ProverkaSTO() != 0 || ProverkaSTR() != 0)
+				while (true)
+				{					
+					if (VvodX())
 						break;
-					VvodO();
+					
+					if (VvodO())
+						break;
 				}
 				system("pause");
-				break;
-			}
-			default:
-			{
-				system("cls");
-				cout << "\tWrong input.\n";
-				system("pause");
+				RandMas();
 				break;
 			}
 			}
@@ -255,15 +336,11 @@ re2:	cout << "Enter coordinates for 'O'.\n";
 		} while (vvod != 27);
 	}
 
-	/*int getStr() { return str; }
-	int getSto() { return sto; }
-	void setStr(const int& s) { str = s; }
-	void setSto(const int& o) { sto = o; }
-	char** getMas() { return mas; }*/
 };
 
 void main()
 {
+	srand(time(0));
 	Game A;
 
 	A.Menu();
